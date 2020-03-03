@@ -7,6 +7,8 @@ Endpoints available
 | Endpoint | Description |
 | -------- | ----------- |
 | getVersion | Returns the application version number in JSON format. |
+| get1KBFile | Returns a 1KB file download |
+| get1MBFile | Retruns a 1MB file download |
 | podReady | This is designed for use when running the application in a Kubernetes cluster. It will return either a ```200/OK``` response if the application is running, or ```500/Internal Server Error``` if the application is being terminated. This endpoint can be used for the liveness and readiness probe endpoints. |
 | podTerminate | Endpoint which can be called if running in Kubernetes to let the app know it's being terminated. This can be configured as the preStop endpoint.  After this endpoint is called, the liveness probe via the podReady endpoint will return a ```500``` status indicating that the server is no longer serving requests. The server will wait 30 seconds when this endpoint is called to allow Kubernetes time to perform a failover |
 
