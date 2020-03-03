@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-api-server
+  labels:
+    app: simple-api-server
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: simple-api-server
+  template:
+    metadata:
+      labels:
+        app: simple-api-server
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: server
+          image: "pcreuwcore.azurecr.io/simpleapi:v1.0.0"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          lifecycle: 
+            preStop:
+              httpGet:
+                path: /api/podTerminate
+                port: 3000
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/podReady
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/podReady
+              port: http
