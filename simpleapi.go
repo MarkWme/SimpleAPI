@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/valyala/fasthttp"
@@ -21,6 +22,22 @@ func getVersion(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusOK)
 	json.NewEncoder(ctx).Encode(getVersionValue())
 	log.Println("getVersion endpoint:", getVersionValue())
+}
+
+func get1KBFile(ctx *fasthttp.RequestCtx) {
+	ctx.SetContentType("application/octet-stream")
+	ctx.Response.Header.Set("Content-Disposition", "attachment; filename=1kb.bin")
+	ctx.SetStatusCode(fasthttp.StatusOK)
+	fmt.Fprint(ctx, strings.Repeat("X", 1024))
+	log.Println("get1KBFile endpoint")
+}
+
+func get1MBFile(ctx *fasthttp.RequestCtx) {
+	ctx.SetContentType("application/octet-stream")
+	ctx.Response.Header.Set("Content-Disposition", "attachment; filename=1mb.bin")
+	ctx.SetStatusCode(fasthttp.StatusOK)
+	fmt.Fprint(ctx, strings.Repeat("X", 1048576))
+	log.Println("get1MBFile endpoint")
 }
 
 func podTerminate() {
@@ -45,6 +62,10 @@ func main() {
 		switch string(ctx.Path()) {
 		case "/api/getVersion":
 			getVersion(ctx)
+		case "/api/get1KBFile":
+			get1KBFile(ctx)
+		case "/api/get1MBFile":
+			get1MBFile(ctx)
 		case "/api/podTerminate":
 			podTerminate()
 		case "/api/podReady":
