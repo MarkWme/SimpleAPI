@@ -5,7 +5,7 @@ metadata:
   labels:
     app: simple-api-server
 spec:
-  replicas: 10
+  replicas: 20
   selector:
     matchLabels:
       app: simple-api-server
@@ -21,11 +21,11 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "250m"
-            limits:
               memory: "128Mi"
-              cpu: "500m"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
           lifecycle: 
             preStop:
               httpGet:
