@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"strings"
 	"time"
-
-	"github.com/valyala/fasthttp"
 )
 
 type version struct {
@@ -17,67 +16,68 @@ type version struct {
 
 var ready bool = true
 
-func getVersion(ctx *fasthttp.RequestCtx) {
-	ctx.SetContentType("application/json")
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	json.NewEncoder(ctx).Encode(getVersionValue())
+func getVersion(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(getVersionValue())
 	log.Println("getVersion endpoint:", getVersionValue())
 }
 
-func get1KBFile(ctx *fasthttp.RequestCtx) {
-	ctx.SetContentType("application/octet-stream")
-	ctx.Response.Header.Set("Content-Disposition", "attachment; filename=1kb.bin")
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	fmt.Fprint(ctx, strings.Repeat("X", 1024))
+func get1KBFile(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Header().Set("Content-Disposition", "attachment; filename=1kb.bin")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(strings.Repeat("X", 1024)))
+	//fmt.Fprint(ctx, strings.Repeat("X", 1024))
 	log.Println("get1KBFile endpoint")
 }
 
-func get1MBFile(ctx *fasthttp.RequestCtx) {
-	ctx.SetContentType("application/octet-stream")
-	ctx.Response.Header.Set("Content-Disposition", "attachment; filename=1mb.bin")
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	fmt.Fprint(ctx, strings.Repeat("X", 1048576))
-	log.Println("get1MBFile endpoint")
+func get1MBFile(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Header().Set("Content-Disposition", "attachment; filename=1kb.bin")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(strings.Repeat("X", 1048576)))
+	//fmt.Fprint(ctx, strings.Repeat("X", 1024))
+	log.Println("get1KBFile endpoint")
 }
 
-func podTerminate() {
+func podTerminate(w http.ResponseWriter, r *http.Request) {
 	log.Println("podTerminate endpoint: Starting 30 second waiting period ...")
 	ready = false
 	time.Sleep(30 * time.Second)
 	log.Println("Waiting period complete")
 }
 
-func podReady(ctx *fasthttp.RequestCtx) {
+func podReady(w http.ResponseWriter, r *http.Request) {
 	log.Println("podReady endpoint:", ready)
 	if ready {
-		ctx.SetStatusCode(fasthttp.StatusOK)
-		fmt.Fprintf(ctx, "OK")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
 	} else {
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
+
 }
 
 func main() {
-	m := func(ctx *fasthttp.RequestCtx) {
-		switch string(ctx.Path()) {
-		case "/api/getVersion":
-			getVersion(ctx)
-		case "/api/get1KBFile":
-			get1KBFile(ctx)
-		case "/api/get1MBFile":
-			get1MBFile(ctx)
-		case "/api/podTerminate":
-			podTerminate()
-		case "/api/podReady":
-			podReady(ctx)
-		default:
-			ctx.Error("not found", fasthttp.StatusNotFound)
-		}
+	http.HandleFunc("/api/getVersion", getVersion)
+	http.HandleFunc("/api/get1KBFile", get1KBFile)
+	http.HandleFunc("/api/get1MBFile", get1MBFile)
+	http.HandleFunc("/api/podTerminate", podTerminate)
+	http.HandleFunc("/api/podReady", podReady)
+	srv := &http.Server{
+		Addr:              ":3000",
+		ReadTimeout:       1 * time.Second,
+		WriteTimeout:      1 * time.Second,
+		IdleTimeout:       30 * time.Second,
+		ReadHeaderTimeout: 2 * time.Second,
 	}
 	log.Println("Starting HTTP server on port 3000")
-	fasthttp.ListenAndServe(":3000", m)
+	if err := srv.ListenAndServe(); err != nil {
+		fmt.Printf("Server failed: %s\n", err)
+	}
 }
 
 func getVersionValue() version {
-	return version{"Simple API Server", "1.0.0"}
+	return version{"Simple API Server", "1.1.0"}
 }
