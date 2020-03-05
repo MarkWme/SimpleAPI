@@ -38,7 +38,7 @@ func get1MBFile(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(strings.Repeat("X", 1048576)))
 	//fmt.Fprint(ctx, strings.Repeat("X", 1024))
-	log.Println("get1KBFile endpoint")
+	log.Println("get1MBFile endpoint")
 }
 
 func podTerminate(w http.ResponseWriter, r *http.Request) {
@@ -49,11 +49,12 @@ func podTerminate(w http.ResponseWriter, r *http.Request) {
 }
 
 func podReady(w http.ResponseWriter, r *http.Request) {
-	log.Println("podReady endpoint:", ready)
 	if ready {
+		log.Println("podReady endpoint: Ready")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	} else {
+		log.Println("podReady endpoint: Terminating")
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
