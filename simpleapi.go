@@ -28,7 +28,6 @@ func get1KBFile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Disposition", "attachment; filename=1kb.bin")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(strings.Repeat("X", 1024)))
-	//fmt.Fprint(ctx, strings.Repeat("X", 1024))
 	log.Println("get1KBFile endpoint")
 }
 
@@ -37,7 +36,6 @@ func get1MBFile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Disposition", "attachment; filename=1kb.bin")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(strings.Repeat("X", 1048576)))
-	//fmt.Fprint(ctx, strings.Repeat("X", 1024))
 	log.Println("get1MBFile endpoint")
 }
 
@@ -68,8 +66,8 @@ func main() {
 	http.HandleFunc("/api/podReady", podReady)
 	srv := &http.Server{
 		Addr:              ":3000",
-		ReadTimeout:       1 * time.Second,
-		WriteTimeout:      1 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      10 * time.Second,
 		IdleTimeout:       30 * time.Second,
 		ReadHeaderTimeout: 2 * time.Second,
 	}

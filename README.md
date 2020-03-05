@@ -20,4 +20,6 @@ You can simulate the process of updating an application and deploying a new vers
 
 ### Performance Testing
 
-This application is written in Go using the fasthttp library and is intended to be lightweight and fast. The application will automatically spawn new threads to handle incoming connections, so it's ideal to use as the target when performance testing an Ingress Controller.
+This application is written in Go and is intended to be lightweight and fast. The application will automatically spawn new threads to handle incoming connections, so it's ideal to use as the target when performance testing an Ingress Controller.
+
+If you use the manifest included to deploy the application to a Kubernetes cluster, you may need to modify the requests and limits depending on the capabilities of your Kubernetes cluster's nodes. Typically, the application uses no more than about 15MB of memory, but the CPU utilisation will vary depending on the number of replicas deployed and the load you're placing on the app. Watch the cluster carefully and make sure that the app is not being throttled on CPU.

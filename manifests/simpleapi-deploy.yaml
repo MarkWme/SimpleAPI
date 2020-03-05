@@ -5,7 +5,7 @@ metadata:
   labels:
     app: simple-api-server
 spec:
-  replicas: 20
+  replicas: 10
   selector:
     matchLabels:
       app: simple-api-server
@@ -17,15 +17,15 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
         - name: server
-          image: "pcreuwcore.azurecr.io/simpleapi:v1.0.0"
+          image: "pcreuwcore.azurecr.io/simpleapi:v1.1.0"
           imagePullPolicy: Always
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "50m"
+              memory: "50Mi"
+              cpu: "300m"
             limits:
-              memory: "256Mi"
-              cpu: "100m"
+              memory: "50Mi"
+              cpu: "300m"
           lifecycle: 
             preStop:
               httpGet:
