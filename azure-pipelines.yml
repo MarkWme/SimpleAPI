@@ -18,7 +18,7 @@ variables:
   dockerRegistryServiceConnection: 'ContainerRegistryConnection'
   imageRepository: 'simpleapi'
   containerRegistry: 'pcreuwcore.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/server/Dockerfile'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.SourceVersion)'
   
   # Agent VM image name
