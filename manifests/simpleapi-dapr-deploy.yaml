@@ -1,18 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: simple-api-server
+  name: simple-api-server-dapr
   labels:
-    app: simple-api-server
+    app: simple-api-server-dapr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: simple-api-server
+      app: simple-api-server-dapr
   template:
     metadata:
       labels:
-        app: simple-api-server
+        app: simple-api-server-dapr
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "simpleapi"
+        dapr.io/app-port: "3000"
     spec:
       terminationGracePeriodSeconds: 60
       containers:

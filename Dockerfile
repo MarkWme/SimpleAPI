@@ -1,16 +1,15 @@
-
 #build stage
-FROM golang:alpine AS builder
+FROM pcreuwcore.azurecr.io/golang:alpine AS builder
+RUN apk add --no-cache git
 WORKDIR /go/src/app
 COPY . .
-RUN apk add --no-cache git
 RUN go get -d -v ./...
-RUN go install -v ./...
+RUN go build -o /go/bin/app -v ./...
 
 #final stage
-FROM alpine:latest
+FROM pcreuwcore.azurecr.io/alpine:latest
 RUN apk --no-cache add ca-certificates
 COPY --from=builder /go/bin/app /app
-ENTRYPOINT ./app
+ENTRYPOINT /app
 LABEL Name=simpleapi Version=0.0.1
 EXPOSE 3000

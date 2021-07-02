@@ -20,7 +20,7 @@ func getVersion(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(getVersionValue())
-	log.Println("getVersion endpoint:", getVersionValue())
+	log.Println("getVersion endpoint:", getVersionValue(), "from", r.RemoteAddr)
 }
 
 func get1KBFile(w http.ResponseWriter, r *http.Request) {
