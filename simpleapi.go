@@ -78,5 +78,5 @@ func main() {
 }
 
 func getVersionValue() version {
-	return version{"Simple API Server", "1.1.0"}
+	return version{"Simple API Server", "1.1.1"}
 }
