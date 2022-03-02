@@ -65,13 +65,13 @@ func main() {
 	http.HandleFunc("/api/podTerminate", podTerminate)
 	http.HandleFunc("/api/podReady", podReady)
 	srv := &http.Server{
-		Addr:              ":3000",
+		Addr:              ":80",
 		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      10 * time.Second,
 		IdleTimeout:       30 * time.Second,
 		ReadHeaderTimeout: 2 * time.Second,
 	}
-	log.Println("Starting HTTP server on port 3000")
+	log.Println("Starting HTTP server on port 80")
 	if err := srv.ListenAndServe(); err != nil {
 		fmt.Printf("Server failed: %s\n", err)
 	}
